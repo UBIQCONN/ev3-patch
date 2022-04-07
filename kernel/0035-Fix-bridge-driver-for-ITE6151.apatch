@@ -1,0 +1,30 @@
+From 4131974a8d655da5782be9041dde74b2d4522768 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Tue, 14 Dec 2021 16:24:14 +0800
+Subject: [PATCH 35/46] Fix bridge driver for ITE6151
+
+---
+ drivers/gpu/drm/bridge/ite6151.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/ite6151.c b/drivers/gpu/drm/bridge/ite6151.c
+index 7288fdb4fcd3..376d220661ee 100644
+--- a/drivers/gpu/drm/bridge/ite6151.c
++++ b/drivers/gpu/drm/bridge/ite6151.c
+@@ -914,10 +914,9 @@ static int it6151_bridge_attach(struct drm_bridge *bridge)
+ 
+ 	drm_connector_helper_add(&it6151->connector,
+ 				 &it6151_connector_helper_funcs);
+-/*	drm_connector_attach_encoder(&it6151->connector, bridge->encoder); */
+-	drm_mode_connector_attach_encoder(&it6151->connector,
+-							bridge->encoder);
+-
++	drm_connector_attach_encoder(&it6151->connector, bridge->encoder); 
++/*	drm_mode_connector_attach_encoder(&it6151->connector,
++							bridge->encoder);*/
+ 
+ 	host = of_find_mipi_dsi_host_by_node(it6151->host_node);
+ 	if (!host) {
+-- 
+2.17.1
+

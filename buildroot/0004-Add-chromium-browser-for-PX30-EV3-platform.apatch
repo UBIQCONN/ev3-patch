@@ -1,0 +1,24 @@
+From 80d1bd9c6ac931ca254288ce7409b717484ba5a0 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Tue, 8 Jun 2021 16:18:10 +0800
+Subject: [PATCH 4/6] Add chromium browser for PX30 EV3 platform
+
+---
+ configs/rockchip_px30_64_ev3_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configs/rockchip_px30_64_ev3_defconfig b/configs/rockchip_px30_64_ev3_defconfig
+index 8dd262734b..c1a7092ceb 100644
+--- a/configs/rockchip_px30_64_ev3_defconfig
++++ b/configs/rockchip_px30_64_ev3_defconfig
+@@ -17,6 +17,7 @@
+ #include "bt.config"
+ #include "qt.config"
+ #include "qt_app.config"
++#include "chromium.config"
+ BR2_CCACHE=y
+ BR2_TARGET_GENERIC_HOSTNAME="px30_64"
+ BR2_TARGET_GENERIC_ISSUE="Welcome to PX30 Buildroot"
+-- 
+2.17.1
+

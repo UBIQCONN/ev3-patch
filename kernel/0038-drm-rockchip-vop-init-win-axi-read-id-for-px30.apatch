@@ -1,0 +1,32 @@
+From 0d123300176db854c9805a8927f82303351f13c2 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 11 Mar 2022 14:01:56 +0800
+Subject: [PATCH 38/46] drm/rockchip: vop: init win axi read id for px30
+
+---
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+index 7c02fa511b43..c4ef8538cbc6 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+@@ -1352,6 +1352,7 @@ static const struct vop_win_phy rk3366_lit_win0_data = {
+ 	.global_alpha_val = VOP_REG(RK3366_LIT_WIN0_ALPHA_CTRL, 0xff, 4),
+ 	.key_color = VOP_REG(RK3366_LIT_WIN0_COLOR_KEY, 0xffffff, 0),
+ 	.key_en = VOP_REG(RK3366_LIT_WIN0_COLOR_KEY, 0x1, 24),
++        .channel = VOP_REG(RK3366_LIT_WIN0_CTRL0, 0xff, 12),
+ };
+ 
+ static const struct vop_win_phy rk3366_lit_win1_data = {
+@@ -1372,6 +1373,7 @@ static const struct vop_win_phy rk3366_lit_win1_data = {
+ 	.global_alpha_val = VOP_REG(RK3366_LIT_WIN1_ALPHA_CTRL, 0xff, 4),
+ 	.key_color = VOP_REG(RK3366_LIT_WIN1_COLOR_KEY, 0xffffff, 0),
+ 	.key_en = VOP_REG(RK3366_LIT_WIN1_COLOR_KEY, 0x1, 24),
++        .channel = VOP_REG(RK3366_LIT_WIN1_CTRL1, 0xf, 8),
+ };
+ 
+ static const struct vop_win_data rk3366_vop_lit_win_data[] = {
+-- 
+2.17.1
+

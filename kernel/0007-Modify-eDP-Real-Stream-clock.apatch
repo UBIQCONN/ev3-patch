@@ -1,0 +1,36 @@
+From e315385417540c477f3bc05536a2257a42e71145 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Wed, 2 Jun 2021 11:46:29 +0800
+Subject: [PATCH 07/46] Modify eDP Real Stream clock
+
+---
+ drivers/gpu/drm/bridge/tc358770.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/tc358770.c b/drivers/gpu/drm/bridge/tc358770.c
+index c09004320972..1346aa07f66a 100644
+--- a/drivers/gpu/drm/bridge/tc358770.c
++++ b/drivers/gpu/drm/bridge/tc358770.c
+@@ -684,8 +684,8 @@ static int tc_dp_phy_plls(struct tc_data *tc)
+ 	if (ret)
+ 		return ret;
+ 
+-/*	tc358770_write(tc->regmap, PXL_PLLPARAM, 0x0022823a); */
+-	tc358770_write(tc->regmap, PXL_PLLPARAM, 0x00228236);
++	tc358770_write(tc->regmap, PXL_PLLPARAM, 0x0022823a); 
++/*	tc358770_write(tc->regmap, PXL_PLLPARAM, 0x00228236);  */
+ 
+ 	/* Force PLL parameter update and disable bypass */
+ 	return tc_pllupdate(tc, PXL_PLLCTRL);
+@@ -948,7 +948,7 @@ static int tc_set_video_mode(struct tc_data *tc,
+ 	 * sync signals
+ 	 */
+ 	ret = tc358770_write(tc->regmap, VPCTRL0,
+-			   FIELD_PREP(VSDELAY, 0x108) |
++			   FIELD_PREP(VSDELAY, 0x200) |
+ 			   OPXLFMT_RGB666 | FRMSYNC_DISABLED | MSF_DISABLED);
+ 	if (ret)
+ 		return ret;
+-- 
+2.17.1
+

@@ -1,0 +1,345 @@
+From 706f6ae69f3b7964bd41e81f0fcb365cf9b19d57 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 1 Jul 2021 09:01:12 +0800
+Subject: [PATCH 19/46] Add regulator for TC358770
+
+---
+ .../boot/dts/rockchip/px30-ev3-ddr3-linux.dts |  26 ++--
+ drivers/gpu/drm/bridge/tc358770.c             | 112 +++++++++++++-----
+ 2 files changed, 97 insertions(+), 41 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+index b806eb375c45..dd3642346997 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+@@ -194,8 +194,8 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&edp_vcc1v8_drv>;
+ 		regulator-name = "vcc1v8_edp";
+-		regulator-always-on;
+-		regulator-boot-on;
++	/*	regulator-always-on; 
++		regulator-boot-on; */
+ 	};
+ 
+ 	vcc1v2_edp: vcc1v2-edp-regulator {
+@@ -205,8 +205,8 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&edp_vcc1v2_drv>;
+ 		regulator-name = "vcc1v2_edp";
+-		regulator-always-on;
+-		regulator-boot-on;
++	/*	regulator-always-on;
++		regulator-boot-on; */
+ 	};
+ 
+ 	cam_avdd2v8: cam-avdd2v8-regulator {
+@@ -345,7 +345,7 @@
+                         native-mode = <&timing0>;
+  
+                         timing0: timing0 {
+-	          		clock-frequency = <144000000>;  
++	          		clock-frequency = <139200000>;   
+                                 hactive = <1920>;
+                                 vactive = <1080>;
+                                 hfront-porch = <48>;
+@@ -463,7 +463,7 @@
+ 
+ &dmc {
+ 	center-supply = <&vdd_logic>;
+-	status = "okay"; 
++	status = "okay";  
+ };
+ 
+ &emmc {
+@@ -479,7 +479,7 @@
+ 
+ &gmac {
+ 	phy-supply = <&vcc_phy>;
+-	clock_in_out = "output";
++	clock_in_out = "input";
+ 	snps,reset-gpio = <&gpio2 RK_PB5 GPIO_ACTIVE_LOW>;
+ 	snps,reset-active-low;
+ 	snps,reset-delays-us = <0 50000 50000>;
+@@ -773,6 +773,8 @@
+ 
+ 		vcc1v8-supply = <&vcc1v8_edp>;
+ 		vcc1v2-supply = <&vcc1v2_edp>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&edp_enable_drv>; 
+ 
+ 	        ports {
+         	        #address-cells = <1>;
+@@ -1059,23 +1061,23 @@
+ */
+ 	lcd-panel {
+ 		lcd_panel_reset: lcd-panel-reset {
+-			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>; 
++			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_down>; 
+ 		};
+ 
+ 		edp_vcc1v2_drv: edp-vcc1v2-drv {
+-			rockchip,pins = <3 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <3 RK_PA2 RK_FUNC_GPIO &pcfg_pull_down>;
+ 		};
+ 
+ 		edp_vcc1v8_drv: edp-vcc1v8-drv {
+-			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
+ 		};
+ 
+ 		bl_en_drv: bl-en-drv {
+-			rockchip,pins = <0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
+ 		};
+ 
+ 		edp_enable_drv: edp-enable-drv {
+-			rockchip,pins = <3 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <3 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
+ 		};
+ 	};
+ 
+diff --git a/drivers/gpu/drm/bridge/tc358770.c b/drivers/gpu/drm/bridge/tc358770.c
+index 255c8516d554..346c28860c44 100644
+--- a/drivers/gpu/drm/bridge/tc358770.c
++++ b/drivers/gpu/drm/bridge/tc358770.c
+@@ -222,9 +222,9 @@
+ #define REF_FREQ_19M2			(1 << 8) /* 19.2 MHz */
+ #define REF_FREQ_26M			(2 << 8) /* 26 MHz */
+ #define REF_FREQ_13M			(3 << 8) /* 13 MHz */
+-#define SYSCLK_SEL_LSCLK		(0 << 4)
+-#define LSCLK_DIV_1			(0 << 0)
+-#define LSCLK_DIV_2			(1 << 0)
++#define SYSCLK_SEL_LSCLK		(1 << 2)
++#define LSCLK_DIV_1			(1 << 0)
++#define LSCLK_DIV_2			(2 << 0)
+ 
+ /* Test & Debug */
+ #define TSTCTL			0x0a00
+@@ -236,6 +236,13 @@
+ #define COLOR_BAR_MODE_BARS	2
+ #define PLL_DBG			0x0a04
+ 
++static const char * const tc358770_supply_names[] = {
++	"vcc1v8",		
++	"vcc1v2",	
++};
++
++#define TC358770_NUM_SUPPLIES ARRAY_SIZE(tc358770_supply_names)
++
+ static bool tc_test_pattern;
+ module_param_named(test, tc_test_pattern, bool, 0644);
+ 
+@@ -263,6 +270,7 @@ struct tc_data {
+ 	struct gpio_desc		*enable_gpio;
+ 	u8				assr;
+ 	u32				rev;
++	struct regulator_bulk_data supplies[TC358770_NUM_SUPPLIES];
+ 
+ 	        /* display edid */
+         struct edid	                *edid;
+@@ -606,7 +614,7 @@ static int tc_stream_clock_calc(struct tc_data *tc)
+ 	 * M/N = f_STRMCLK / f_LSCLK
+ 	 *
+ 	 */
+-	return tc358770_write(tc->regmap, DP0_VIDMNGEN1, 0x98A3);
++	return tc358770_write(tc->regmap, DP0_VIDMNGEN1, 0x98A3);  
+ }
+ 
+ static int tc_set_dsi_configuration(struct tc_data *tc)
+@@ -637,7 +645,7 @@ static int tc_set_dsi_configuration(struct tc_data *tc)
+ 	 return 1;
+ }
+ 
+-/*
++
+ static int tc_set_syspllparam(struct tc_data *tc)
+ {
+ 	unsigned long rate;
+@@ -664,13 +672,13 @@ static int tc_set_syspllparam(struct tc_data *tc)
+ 
+ 	return tc358770_write(tc->regmap, SYS_PLLPARAM, pllparam);
+ }
+-*/
++
+ 
+ static int tc_setup_main_link(struct tc_data *tc)
+ {
+ 	dev_dbg(tc->dev,  "%s\n", __func__);
+ 	tc358770_write(tc->regmap, DP0_SRCCTRL, 0x0000C095);
+-	tc358770_write(tc->regmap, SYS_PLLPARAM, 0x00000106);
++	tc_set_syspllparam(tc);
+ 
+ 	return 1;
+ }
+@@ -1075,6 +1083,8 @@ static int tc_stream_enable(struct tc_data *tc)
+ 
+ 	dev_dbg(tc->dev, "enable video stream\n");
+ 
++	tc_set_dsi_configuration(tc);
++
+ 	/* PXL PLL setup */
+ 	if (tc_test_pattern) {
+ 		ret = tc_pxl_pll_en(tc, clk_get_rate(tc->refclk),
+@@ -1207,6 +1217,18 @@ static const struct drm_connector_funcs tc_bridge_connector_funcs = {
+ 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+ };
+ 
++static int tc_configure_regulators(struct tc_data *tc)
++{
++	unsigned int i;
++
++	for (i = 0; i < TC358770_NUM_SUPPLIES; i++)
++		tc->supplies[i].supply = tc358770_supply_names[i];
++
++	return devm_regulator_bulk_get(tc->dev,
++		TC358770_NUM_SUPPLIES,
++		tc->supplies);
++}
++
+ static int tc_bridge_attach(struct drm_bridge *bridge)
+ {
+ 	int ret;
+@@ -1261,8 +1283,10 @@ static int tc_bridge_attach(struct drm_bridge *bridge)
+ 	/* TODO: setting to 4 lanes always for now */
+ 	dsi->lanes = 4;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
++/*	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST
++                | MIPI_DSI_MODE_EOT_PACKET | MIPI_DSI_MODE_LPM; */
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST
+-                | MIPI_DSI_MODE_VIDEO_AUTO_VERT | MIPI_DSI_MODE_LPM;
++                | MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_VIDEO_HBP; 
+ 
+ 	ret = mipi_dsi_attach(dsi);
+ 	if (ret < 0) {
+@@ -1289,6 +1313,7 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
+ 	int ret;
+ 
+ 	dev_dbg(tc->dev,  "%s start\n", __func__);
++/*
+ 	ret = tc_setup_main_link(tc);
+ 	if (ret < 0) {
+ 		dev_err(tc->dev, "failed to setup main link: %d\n", ret);
+@@ -1301,6 +1326,10 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
+ 		return;
+ 	}
+ 
++	tc358770_write(tc->regmap, DSI0_PPI_TX_RX_TA, 0x0008000B);
++	tc358770_write(tc->regmap, DSI0_PPI_LPTXTIMECNT, 0x00000007);
++*/
++	usleep_range(40000, 80000);
+ 	ret = tc_reset_enable_main_link(tc);
+ 	if (ret < 0) {
+ 		dev_err(tc->dev, "failed to reset and enable main link: %d\n", ret);
+@@ -1349,14 +1378,47 @@ static void tc_bridge_disable(struct drm_bridge *bridge)
+ static void tc_bridge_pre_enable(struct drm_bridge *bridge)
+ {
+ 	struct tc_data *tc = bridge_to_tc(bridge);
++	int ret;
+ 
+ 	dev_dbg(tc->dev,  "%s start\n", __func__);
++	dev_info(tc->dev,  "%s start\n", __func__);
+ 
+         if (tc->enable_gpio){
+ 		gpiod_direction_output(tc->enable_gpio, 1);
++		usleep_range(40000, 60000);
+ 	}	
+ 	
+-	tc_set_dsi_configuration(tc);
++	ret = tc_setup_main_link(tc);
++	if (ret < 0) {
++		dev_err(tc->dev, "failed to setup main link: %d\n", ret);
++		return;
++	}
++
++	ret = tc_dp_phy_plls(tc);
++	if (ret < 0) {
++		dev_err(tc->dev, "failed to DP Phy and PLLs: %d\n", ret);
++		return;
++	}
++
++	tc358770_write(tc->regmap, DSI0_PPI_TX_RX_TA, 0x0008000B);
++	tc358770_write(tc->regmap, DSI0_PPI_LPTXTIMECNT, 0x00000007);
++       
++	ret = regmap_read(tc->regmap, TC_IDREG, &tc->rev);
++        if (ret) {
++                dev_err(tc->dev, "can not read device ID: %d\n", ret);
++                return ;
++        }
++
++
++        dev_info(tc->dev, "Device ID: 0x%08x\n", tc->rev);
++
++        if ((tc->rev != 0x7001) && (tc->rev != 0x7003)) {
++                dev_err(tc->dev, "invalid device ID: 0x%08x\n", tc->rev);
++                return ;
++        }
++
++        tc->assr = (tc->rev == 0x7001); /* Enable ASSR for eDP panels */
++
+ 	drm_panel_prepare(tc->panel);
+ }
+ 
+@@ -1365,6 +1427,10 @@ static void tc_bridge_post_disable(struct drm_bridge *bridge)
+ 	struct tc_data *tc = bridge_to_tc(bridge);
+ 
+ 	dev_dbg(tc->dev,  "%s start\n", __func__);
++	dev_info(tc->dev,  "%s start\n", __func__);
++        if (tc->enable_gpio){
++		gpiod_direction_output(tc->enable_gpio, 0);
++	}
+ //	if (tc->refclk)
+ //		clk_disable_unprepare(tc->refclk);
+ }
+@@ -1480,6 +1546,13 @@ static int tc_bridge_probe(struct i2c_client *client,
+ 
+ 	dev_set_drvdata(&client->dev, tc);
+ 
++	tc_configure_regulators(tc);
++
++	ret = regulator_bulk_enable(TC358770_NUM_SUPPLIES, tc->supplies);
++	if (ret < 0) {
++		dev_err(dev, "Failed to enable regulators\n");
++	}
++
+ 	tc->enable_gpio = devm_gpiod_get_optional(tc->dev, "enable",
+                                                   GPIOD_ASIS);
+ 	if (IS_ERR(tc->enable_gpio)) {
+@@ -1488,7 +1561,7 @@ static int tc_bridge_probe(struct i2c_client *client,
+ 	}
+ 
+         if (tc->enable_gpio){
+-		gpiod_direction_output(tc->enable_gpio, 1);
++		gpiod_direction_output(tc->enable_gpio, 0);
+ 	}
+ 
+ 	tc->refclk = devm_clk_get(tc->dev, "refclk");
+@@ -1500,25 +1573,6 @@ static int tc_bridge_probe(struct i2c_client *client,
+ 		tc->refclk = NULL;
+ 	}
+ 
+-       ret = regmap_read(tc->regmap, TC_IDREG, &tc->rev);
+-        if (ret) {
+-                dev_err(tc->dev, "can not read device ID: %d\n", ret);
+-                return ret;
+-        }
+-
+-
+-        dev_info(tc->dev, "Device ID: 0x%08x\n", tc->rev);
+-
+-        if ((tc->rev != 0x7001) && (tc->rev != 0x7003)) {
+-                dev_err(tc->dev, "invalid device ID: 0x%08x\n", tc->rev);
+-                return -EINVAL;
+-        }
+-
+-        tc->assr = (tc->rev == 0x7001); /* Enable ASSR for eDP panels */
+-
+-	//DSI port initial 
+-//	tc_set_dsi_configuration(tc);
+-
+ 	ret = tc_bridge_parse_dsi_host(tc);
+ 	if (ret)
+ 		return ret;
+-- 
+2.17.1
+

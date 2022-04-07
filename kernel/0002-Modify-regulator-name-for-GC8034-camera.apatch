@@ -1,0 +1,36 @@
+From e237fa82e07b9e6a9a7fdb39ed527d4c3887ea1e Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 6 Aug 2021 14:12:40 +0800
+Subject: [PATCH 02/46] Modify regulator name for GC8034 camera
+
+---
+ drivers/media/i2c/gc8034.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/gc8034.c b/drivers/media/i2c/gc8034.c
+index a55682dcd2fa..d8e448d90f49 100644
+--- a/drivers/media/i2c/gc8034.c
++++ b/drivers/media/i2c/gc8034.c
+@@ -94,8 +94,9 @@
+ 
+ static const char * const gc8034_supply_names[] = {
+ 	"avdd",		/* Analog power */
+-	"dovdd",	/* Digital I/O power */
+-	"dvdd",		/* Digital core power */
++	"afvdd",	
++	"iovdd",
++	"corevdd",
+ };
+ 
+ static const struct regval *gc8034_global_regs;
+@@ -1089,6 +1090,7 @@ static int gc8034_g_frame_interval(struct v4l2_subdev *sd,
+ 	struct gc8034 *gc8034 = to_gc8034(sd);
+ 	const struct gc8034_mode *mode = gc8034->cur_mode;
+ 
++	v4l2_info(sd, "%s %d-STD\n", __func__, on);
+ 	mutex_lock(&gc8034->mutex);
+ 	fi->interval = mode->max_fps;
+ 	mutex_unlock(&gc8034->mutex);
+-- 
+2.17.1
+

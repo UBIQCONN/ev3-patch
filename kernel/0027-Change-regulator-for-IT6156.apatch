@@ -1,0 +1,39 @@
+From 20b4e05b35933cedd78d8785d57045f718a56958 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Mon, 6 Sep 2021 15:20:24 +0800
+Subject: [PATCH 27/46] Change regulator for IT6156
+
+---
+ arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts | 2 ++
+ arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts     | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts
+index ac219a06593f..6ea9d2858180 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts
+@@ -50,6 +50,8 @@
+ 		status = "okay";
+ 		reset-gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_HIGH>;
+ 		pinctrl-names = "default";
++		vcc1v8-supply = <&vcc1v8_edp>;
++		vcc1v2-supply = <&vcc1v2_edp>;
+ 		pinctrl-0 = <&edp_enable_drv>; 
+ 
+ 		ports {
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+index 88827a0922de..5303e06b1657 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+@@ -384,7 +384,7 @@
+                 user-button {
+                         label = "User Button";
+                         gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_LOW>;
+-                        linux,code = <KEY_POWER>;
++                        linux,code = <KEY_PAUSE>;
+                 };
+         };
+ 
+-- 
+2.17.1
+

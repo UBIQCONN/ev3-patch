@@ -1,0 +1,39 @@
+From be423a8fd82664de4834526be3fddd40e67d6176 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 24 Jun 2021 13:58:13 +0800
+Subject: [PATCH 08/11] Add MSF in tc358770
+
+---
+ drivers/video/bridge/tc358770.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/drivers/video/bridge/tc358770.c b/drivers/video/bridge/tc358770.c
+index e28d4fa8bb..7c23eed90f 100644
+--- a/drivers/video/bridge/tc358770.c
++++ b/drivers/video/bridge/tc358770.c
+@@ -884,7 +884,7 @@ static int tc_set_video_mode(struct udevice *dev,
+ 	 */
+ 	ret = tc358770_write(dev, VPCTRL0,
+ 			   FIELD_PREP(VSDELAY, 0x200) |
+-			   OPXLFMT_RGB666 | FRMSYNC_DISABLED | MSF_DISABLED);
++			   OPXLFMT_RGB666 | FRMSYNC_DISABLED | MSF_ENABLE);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -964,13 +964,6 @@ static int tc_set_video_mode(struct udevice *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = tc358770_write(dev, DPIPXLFMT,
+-			   VS_POL_ACTIVE_LOW | HS_POL_ACTIVE_LOW |
+-			   DE_POL_ACTIVE_HIGH | SUB_CFG_TYPE_CONFIG1 |
+-			   DPI_BPP_RGB888);
+-	if (ret)
+-		return ret;
+-
+ 	ret = tc358770_write(dev, DP0_MISC,0x1EBF0000);
+ /*	ret = tc358770_write(dev, DP0_MISC,
+ 			   FIELD_PREP(MAX_TU_SYMBOL, max_tu_symbol) |
+-- 
+2.17.1
+

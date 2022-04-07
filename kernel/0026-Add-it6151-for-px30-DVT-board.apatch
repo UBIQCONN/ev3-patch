@@ -1,0 +1,130 @@
+From 72b1ed52b40868dcd08b5c5340c3fcd571c17cbd Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Tue, 14 Dec 2021 16:10:13 +0800
+Subject: [PATCH 26/46] Add it6151 for px30 DVT board
+
+---
+ .../dts/rockchip/px30-ev3-ddr3-dvt-linux.dts  | 84 +++++++++++++++++++
+ .../boot/dts/rockchip/px30-ev3-ddr3-linux.dts |  2 +-
+ arch/arm64/configs/ev3_linux_defconfig        |  1 +
+ 3 files changed, 86 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts
+
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts
+new file mode 100644
+index 000000000000..ac219a06593f
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-dvt-linux.dts
+@@ -0,0 +1,84 @@
++
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 Taiwan Ubiqconn Co., Ltd
++ *
++ */
++
++/dts-v1/;
++#include "px30-ev3-ddr3-linux.dts"
++
++/ {
++	model = "Ubiqconn linux PX30 EV3 ddr3 DVT board";
++	compatible = "ubiqconn,px30-evb-ddr3-dvt-linux", "rockchip,px30";
++};
++
++&edp_panel {
++	display-timings {
++		native-mode = <&timing0>;
++
++		timing0: timing0 {
++			clock-frequency = <146000000>;
++			hactive = <1920>;
++			vactive = <1080>;
++			hfront-porch = <144>;
++			hsync-len = <44>;
++			hback-porch = <88>;
++			vfront-porch = <4>;
++			vsync-len = <5>;
++			vback-porch = <15>;
++			hsync-active = <0>;
++			vsync-active = <0>;
++			de-active = <1>;
++			pixelclk-active = <0>;
++		};
++	};
++};
++
++/delete-node/ &tc358777xbg;
++&i2c1 {
++	status = "okay";
++
++	ite_bridge: ite6151@5c {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "ite,it6151";
++		reg = <0x5c>;
++		ite,dsi-lanes = <4>;
++		max,dsi-channel = <0>;
++		ite,dp-lanes = <2>;
++		status = "okay";
++		reset-gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&edp_enable_drv>; 
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++
++				bridge_in_dsi: endpoint {
++					remote-endpoint = <&dsi_out_bridge>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++
++				edp_out_panel: endpoint {
++					data-lanes = <0 1>;
++					lane-polarities = <0 1>;
++					remote-endpoint = <&panel_in_edp>;
++				};
++			};
++       		};
++	};
++};
++
++
++&dsi {
++	rockchip,lane-rate = <876>;
++};
++
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+index 1117d4343e47..88827a0922de 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+@@ -761,7 +761,7 @@
+ &i2c1 {
+ 	status = "okay";
+ 
+-	edp-bridge@68 {
++	tc358777xbg: tc358777xbg@68 {
+         	compatible = "toshiba,tc358770";
+ 	        #address-cells = <1>;
+ 	        #size-cells = <0>;
+diff --git a/arch/arm64/configs/ev3_linux_defconfig b/arch/arm64/configs/ev3_linux_defconfig
+index 629371b63b3f..4d1c4eafd6c5 100644
+--- a/arch/arm64/configs/ev3_linux_defconfig
++++ b/arch/arm64/configs/ev3_linux_defconfig
+@@ -346,6 +346,7 @@ CONFIG_DRM_ROCKCHIP_RK618=y
+ CONFIG_DRM_PANEL_SIMPLE=y
+ CONFIG_DRM_TI_SN65DSI86=y
+ CONFIG_DRM_TOSHIBA_TC358770=y
++CONFIG_DRM_IT6151=y
+ CONFIG_DRM_SII902X=y
+ CONFIG_DRM_DW_HDMI_I2S_AUDIO=y
+ CONFIG_DRM_DW_HDMI_CEC=y
+-- 
+2.17.1
+

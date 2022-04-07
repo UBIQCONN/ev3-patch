@@ -1,0 +1,63 @@
+From 3a51caccba48441c851b86c8bdc575f4b839f3b6 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Tue, 14 Dec 2021 16:16:17 +0800
+Subject: [PATCH 30/46] Add codec max volume interface
+
+---
+ sound/soc/codecs/rk817_codec.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
+index 172ca59b227d..c970727cfd0a 100644
+--- a/sound/soc/codecs/rk817_codec.c
++++ b/sound/soc/codecs/rk817_codec.c
+@@ -1076,10 +1076,32 @@ static int rk817_resume(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
++
++static ssize_t rk817_volume_set(struct device *dev,
++                              struct device_attribute *attr,
++                              const char *buf, size_t count)
++{
++       struct rk817_codec_priv *rk817 = dev_get_drvdata(dev);
++       int value;
++       int ret;
++
++       ret = kstrtoint(buf, 8, &value);
++       if (ret != 0)
++               return ret;
++
++       rk817->hp_volume = value;
++
++       return count;
++}
++
++static DEVICE_ATTR(volume, 0200, NULL, rk817_volume_set);
++
+ static int rk817_probe(struct snd_soc_component *component)
+ {
+ 	struct rk817_codec_priv *rk817 = snd_soc_component_get_drvdata(component);
++       int ret;
+ 
++	device_remove_file(codec->dev, &dev_attr_volume);
+ 	DBG("%s\n", __func__);
+ 
+ 	if (!rk817) {
+@@ -1095,6 +1117,13 @@ static int rk817_probe(struct snd_soc_component *component)
+ 	rk817_reset(component);
+ 	snd_soc_add_component_controls(component, rk817_snd_path_controls,
+ 				       ARRAY_SIZE(rk817_snd_path_controls));
++
++       ret = device_create_file(codec->dev, &dev_attr_volume);
++       if (ret != 0) {
++               dev_err(codec->dev, "Failed to create keyclick file: %d\n",
++                       ret);
++       }
++	
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+

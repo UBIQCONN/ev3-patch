@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#
+# Apply patch containing compulab's work.
+# Run in Android TOP directory.
+# $ ./compulab-patch-apply <path-to-patch>
+#
+
+# sanity check
+[[ -d .git ]] && echo "This script schould start at non-git root" && exit
+[[ -z ${1} ]] && echo "Missing path to the patch folder" && exit
+
+patch_path=${1}
+patch_path=`readlink -f ${patch_path}`/
+patch_files=`find ${patch_path} -name '*.apatch'| sort`
+branch_name=${2}
+
+for patch_file in ${patch_files}; do
+	apply_path=`echo ${patch_file} | xargs dirname | sed "s:^${patch_path}::"`
+	[[ ! -d ${apply_path} ]] && git init ${apply_path}
+
+	echo ${patch_file}
+	echo ${apply_path}
+
+	cd ${apply_path}
+	git checkout ${branch_name} 2> /dev/null > /dev/null
+	if [ $? != 0 ]; then
+	    git checkout -b ${branch_name} 2> /dev/null > /dev/null
+	fi
+	git am --abort 2> /dev/null
+	git am --keep-cr < ${patch_file} 2> /dev/null > /dev/null
+	cd - > /dev/null
+done
+
+#find . -name '????-*.apatch' | xargs rm

@@ -1,0 +1,35 @@
+From dcfd807ed81128d5269ee4defbae2ceadfddd939 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 17 Mar 2022 15:14:18 +0800
+Subject: [PATCH] Add rockchip-px30-ev3.conf rockchip-px30-ev3-dvt.conf
+
+---
+ rockchip-px30-ev3-dvt.conf | 4 ++++
+ rockchip-px30-ev3.conf     | 4 ++++
+ 2 files changed, 8 insertions(+)
+ create mode 100644 rockchip-px30-ev3-dvt.conf
+ create mode 100644 rockchip-px30-ev3.conf
+
+diff --git a/rockchip-px30-ev3-dvt.conf b/rockchip-px30-ev3-dvt.conf
+new file mode 100644
+index 0000000..e11695e
+--- /dev/null
++++ b/rockchip-px30-ev3-dvt.conf
+@@ -0,0 +1,4 @@
++include include/common.conf
++include include/demo.conf
++
++MACHINE = "rockchip-px30-ev3-dvt"
+diff --git a/rockchip-px30-ev3.conf b/rockchip-px30-ev3.conf
+new file mode 100644
+index 0000000..482ffe6
+--- /dev/null
++++ b/rockchip-px30-ev3.conf
+@@ -0,0 +1,4 @@
++include include/common.conf
++include include/demo.conf
++
++MACHINE = "rockchip-px30-ev3"
+-- 
+2.17.1
+

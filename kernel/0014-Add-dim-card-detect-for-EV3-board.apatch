@@ -1,0 +1,108 @@
+From 4f3dfe8b79d3c0a1b6d3028d3cc0d15d67f35c80 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Wed, 16 Jun 2021 09:02:10 +0800
+Subject: [PATCH 14/46] Add dim card detect for EV3 board
+
+---
+ .../boot/dts/rockchip/px30-ev3-ddr3-linux.dts | 27 +++++++++++++++++--
+ arch/arm64/configs/ev3_linux_defconfig        |  4 +--
+ 2 files changed, 26 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+index 61d3b0ad141a..9ec2d9f673ca 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+@@ -377,6 +377,18 @@
+                         linux,code = <KEY_POWER>;
+                 };
+         };
++
++	sim_detect {
++                compatible = "gpio-trig";
++                pinctrl-names = "default";
++                pinctrl-0 = <&wwan_drv>;
++		irqpin-gpios = <&gpio3 RK_PC0 GPIO_ACTIVE_HIGH>;
++		power-gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_LOW>,
++				<&gpio3 RK_PA5 GPIO_ACTIVE_HIGH>, 
++				<&gpio3 RK_PB0 GPIO_ACTIVE_LOW>;
++		on_timing = <100 100 100>;
++		off_timing = <100 100 100>;
++	};
+ };
+ 
+ &display_subsystem {
+@@ -1009,7 +1021,7 @@
+ };
+ 
+ &pinctrl {
+-	
++/*	
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_hog>;
+ 
+@@ -1023,7 +1035,7 @@
+ 				<3 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;	//SIM_ON
+ 		};
+ 	};
+-
++*/
+ 	lcd-panel {
+ 		lcd_panel_reset: lcd-panel-reset {
+ 			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>; 
+@@ -1055,6 +1067,17 @@
+ 		};
+ 	};
+ 
++	wwan_setting {
++		wwan_drv: wwan-drv{
++			rockchip,pins = 
++				<3 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>,
++				<3 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>,
++				<3 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>,
++				<3 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>,
++				<3 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
+ 	camera {
+ 		cam_avdd2v8_drv: cam-avdd2v8-drv {
+ 			rockchip,pins = <3 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
+diff --git a/arch/arm64/configs/ev3_linux_defconfig b/arch/arm64/configs/ev3_linux_defconfig
+index d98a5026d437..fe6d8b05d008 100644
+--- a/arch/arm64/configs/ev3_linux_defconfig
++++ b/arch/arm64/configs/ev3_linux_defconfig
+@@ -107,6 +107,7 @@ CONFIG_ZRAM=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_BLK_DEV_RAM_COUNT=1
++CONFIG_GPIO_TRIG=y
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_BLK_DEV_SR=y
+@@ -143,7 +144,6 @@ CONFIG_PPP_FILTER=y
+ CONFIG_PPP_MPPE=y
+ CONFIG_PPP_MULTILINK=y
+ CONFIG_PPPOE=y
+-CONFIG_PPPOL2TP=y
+ CONFIG_PPPOLAC=y
+ CONFIG_PPPOPNS=y
+ CONFIG_PPP_ASYNC=y
+@@ -455,7 +455,6 @@ CONFIG_DEBUG_SET_MODULE_RONX=y
+ CONFIG_SECURITYFS=y
+ # CONFIG_CRYPTO_ECHAINIV is not set
+ CONFIG_CRYPTO_MD5=y
+-CONFIG_CRYPTO_SHA1=y
+ CONFIG_CRYPTO_SHA512=y
+ CONFIG_CRYPTO_TWOFISH=y
+ CONFIG_CRYPTO_ANSI_CPRNG=y
+@@ -472,7 +471,6 @@ CONFIG_CRYPTO_SHA2_ARM64_CE=y
+ CONFIG_CRYPTO_GHASH_ARM64_CE=y
+ CONFIG_CRYPTO_AES_ARM64_CE_CCM=y
+ CONFIG_CRYPTO_AES_ARM64_CE_BLK=y
+-CONFIG_CRC_CCITT=y
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRC7=y
+ # CONFIG_XZ_DEC_X86 is not set
+-- 
+2.17.1
+

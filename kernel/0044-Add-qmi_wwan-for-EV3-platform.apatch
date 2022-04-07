@@ -1,0 +1,32 @@
+From 7222b6881dc59a8f989b7a7750b36f755ab16e92 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 11 Mar 2022 14:21:44 +0800
+Subject: [PATCH 44/46] Add qmi_wwan for EV3 platform
+
+---
+ arch/arm64/configs/ev3_linux_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/configs/ev3_linux_defconfig b/arch/arm64/configs/ev3_linux_defconfig
+index 7da89d988f78..8078322d4e31 100644
+--- a/arch/arm64/configs/ev3_linux_defconfig
++++ b/arch/arm64/configs/ev3_linux_defconfig
+@@ -203,6 +203,7 @@ CONFIG_USB_NET_CDC_MBIM=y
+ # CONFIG_USB_NET_NET1080 is not set
+ # CONFIG_USB_NET_CDC_SUBSET is not set
+ # CONFIG_USB_NET_ZAURUS is not set
++CONFIG_USB_NET_QMI_WWAN=y
+ CONFIG_LIBERTAS_THINFIRM=y
+ CONFIG_MWIFIEX=m
+ CONFIG_MWIFIEX_SDIO=m
+@@ -581,7 +582,6 @@ CONFIG_CRYPTO_ANSI_CPRNG=y
+ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_CRYPTO_USER_API_SKCIPHER=y
+ CONFIG_CRYPTO_DEV_ROCKCHIP=y
+-CONFIG_CRC_CCITT=y
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRC7=y
+ # CONFIG_XZ_DEC_X86 is not set
+-- 
+2.17.1
+

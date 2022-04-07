@@ -1,0 +1,108 @@
+From d5af4252dce8033b5f716062f23977e1270eab98 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Wed, 2 Jun 2021 11:49:35 +0800
+Subject: [PATCH 05/11] Modify eDP Real Stream clock
+
+---
+ drivers/video/bridge/tc358770.c | 21 +++++++++++++++++++--
+ drivers/video/pwm_backlight.c   | 13 +++++++++----
+ 2 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/video/bridge/tc358770.c b/drivers/video/bridge/tc358770.c
+index df44ddf7ab..67542da4b5 100644
+--- a/drivers/video/bridge/tc358770.c
++++ b/drivers/video/bridge/tc358770.c
+@@ -43,6 +43,7 @@ struct tc358770_priv {
+ 	u32			rev;
+ 	struct udevice *vcc1v8_supply;
+ 	struct udevice *vcc1v2_supply;
++	struct gpio_desc enable;
+ };
+ 
+ 
+@@ -449,7 +450,8 @@ static int tc_dp_phy_plls(struct udevice *dev)
+ 	if (ret)
+ 		return ret;
+ 
+-	tc358770_write(dev, PXL_PLLPARAM, 0x00228236);
++/*	tc358770_write(dev, PXL_PLLPARAM, 0x00228236);  */
++	tc358770_write(dev, PXL_PLLPARAM, 0x0022823a);
+ 
+ 	/* Force PLL parameter update and disable bypass */
+ 	return tc_pllupdate(dev, PXL_PLLCTRL);
+@@ -780,7 +782,7 @@ static int tc_set_video_mode(struct udevice *dev,
+ 	 * sync signals
+ 	 */
+ 	ret = tc358770_write(dev, VPCTRL0,
+-			   FIELD_PREP(VSDELAY, 0x108) |
++			   FIELD_PREP(VSDELAY, 0x200) |
+ 			   OPXLFMT_RGB666 | FRMSYNC_DISABLED | MSF_DISABLED);
+ 	if (ret)
+ 		return ret;
+@@ -1110,6 +1112,13 @@ static int tc358770_attach(struct udevice *dev)
+ 		regulator_set_enable(priv->vcc1v2_supply, 1);
+ 	}	
+ 
++	if (priv->enable.dev) {
++		printf("%s %d %d\n", __func__, __LINE__, dm_gpio_get_value(&priv->enable));
++		dm_gpio_set_dir_flags(&priv->enable, GPIOD_IS_OUT | GPIOD_IS_OUT_ACTIVE);
++	/*	ret = dm_gpio_set_value(&priv->enable, 1);   */
++		printf("%s %d %d\n", __func__, __LINE__, dm_gpio_get_value(&priv->enable));
++	}
++
+ 	return video_bridge_set_active(dev, true);
+ }
+ 
+@@ -1137,6 +1146,14 @@ static int tc358770_probe(struct udevice *dev)
+ 		return ret;
+ 	}
+ 
++	ret = gpio_request_by_name(dev, "enable-gpios", 0, &priv->enable,
++				   GPIOD_IS_OUT );
++	if (ret) {
++		debug("%s: Could not decode reset-gpios (%d)\n", __func__, ret);
++		if (ret != -ENOENT)
++			return ret;
++	}
++	
+ 	bridge->dev = dev;
+ 
+ 	tc_set_dsi_configuration(dev);
+diff --git a/drivers/video/pwm_backlight.c b/drivers/video/pwm_backlight.c
+index ab23fdc413..6c2f938845 100644
+--- a/drivers/video/pwm_backlight.c
++++ b/drivers/video/pwm_backlight.c
+@@ -63,8 +63,12 @@ static int pwm_backlight_enable(struct udevice *dev)
+ 		return ret;
+ 	mdelay(10);
+ 
+-	if (dm_gpio_is_valid(&priv->enable))
+-		dm_gpio_set_value(&priv->enable, 1);
++	if (dm_gpio_is_valid(&priv->enable)){
++		printf("%s %d %d\n", __func__, __LINE__, dm_gpio_get_value(&priv->enable));
++		dm_gpio_set_dir_flags(&priv->enable, GPIOD_IS_OUT | GPIOD_IS_OUT_ACTIVE);
++	/*	dm_gpio_set_value(&priv->enable, 1); */
++		printf("%s %d %d\n", __func__, __LINE__, dm_gpio_get_value(&priv->enable));
++	}	
+ 
+ 	return 0;
+ }
+@@ -117,12 +121,13 @@ static int pwm_backlight_ofdata_to_platdata(struct udevice *dev)
+ 	const u32 *cell;
+ 
+ 	debug("%s: start\n", __func__);
++	printf("%s %d\n", __func__, __LINE__);
+ 	ret = uclass_get_device_by_phandle(UCLASS_REGULATOR, dev,
+ 					   "power-supply", &priv->reg);
+ 	if (ret)
+ 		debug("%s: Cannot get power supply: ret=%d\n", __func__, ret);
+-	ret = gpio_request_by_name(dev, "enable", 0, &priv->enable,
+-				   GPIOD_IS_OUT);
++	ret = gpio_request_by_name(dev, "enable-gpios", 0, &priv->enable,
++				   GPIOD_IS_OUT );
+ 	if (ret) {
+ 		debug("%s: Warning: cannot get enable GPIO: ret=%d\n",
+ 		      __func__, ret);
+-- 
+2.17.1
+

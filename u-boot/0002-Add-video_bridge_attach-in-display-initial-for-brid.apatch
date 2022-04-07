@@ -1,0 +1,43 @@
+From 3732bb10de302c898348925281acfb95c4bd4d94 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Mon, 13 Dec 2021 18:00:36 +0800
+Subject: [PATCH 02/11] Add video_bridge_attach in display initial for bridge
+
+---
+ drivers/video/drm/rockchip_display.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/drm/rockchip_display.c b/drivers/video/drm/rockchip_display.c
+index 36e3fd256a..ebf1abb159 100644
+--- a/drivers/video/drm/rockchip_display.c
++++ b/drivers/video/drm/rockchip_display.c
+@@ -911,6 +911,10 @@ static int display_init(struct display_state *state)
+ 	if (conn_state->bridge)
+ 		rockchip_bridge_mode_set(conn_state->bridge, &conn_state->mode);
+ 
++	if (conn_state->bridge) {
++		video_bridge_attach(conn_state->bridge->dev);
++	}
++
+ 	if (crtc_funcs->init) {
+ 		ret = crtc_funcs->init(state);
+ 		if (ret)
+@@ -1457,7 +1461,6 @@ static struct rockchip_panel *rockchip_of_find_panel(struct udevice *dev)
+ 				goto found;
+ 		}
+ 	}
+-
+ 	return NULL;
+ 
+ found:
+@@ -1744,7 +1747,6 @@ static int rockchip_display_probe(struct udevice *dev)
+ 			printf("Warn: can't find connect driver\n");
+ 			continue;
+ 		}
+-
+ 		conn = (const struct rockchip_connector *)dev_get_driver_data(conn_dev);
+ 
+ 		phy = rockchip_of_find_phy(conn_dev);
+-- 
+2.17.1
+

@@ -1,0 +1,46 @@
+From 5cdec1fa658b35c5aac2a36ab415b8fde131ffe6 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 11 Mar 2022 14:14:13 +0800
+Subject: [PATCH 43/46] Change EV3 LCD power sequences for bootloader without
+ splash logo
+
+---
+ .../boot/dts/rockchip/px30-ev3-ddr3-linux.dts     | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+index a365b8180956..b6d71661da29 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+@@ -209,6 +209,18 @@
+ 		regulator-boot-on; 
+ 	};
+ 
++
++	test_edp: test-edp-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio= <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;  
++		pinctrl-names = "default";
++		pinctrl-0 = <&lcd_panel_reset>;
++		regulator-name = "test_edp";
++		regulator-always-on;
++		regulator-boot-on; 
++	};
++ 
+ 	cam_avdd2v8: cam-avdd2v8-regulator {
+ 		compatible = "regulator-fixed";
+ 		enable-active-high;
+@@ -337,9 +349,6 @@
+ 
+                 width-mm = <121>;
+                 height-mm = <68>;
+-		enable-gpios= <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;  
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&lcd_panel_reset>; 
+ 
+                 display-timings {
+                         native-mode = <&timing0>;
+-- 
+2.17.1
+

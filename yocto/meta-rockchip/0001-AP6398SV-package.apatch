@@ -1,0 +1,42 @@
+From 2e9cdf719d3020504b1ac2f6e0fecf41bfd9558e Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 18 Mar 2022 16:48:56 +0800
+Subject: [PATCH 1/7] AP6398SV package
+
+---
+ .../rkwifibt-firmware/rkwifibt-firmware.bb           | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb b/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb
+index 44144ba..34ac82a 100644
+--- a/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb
++++ b/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb
+@@ -40,6 +40,8 @@ PACKAGES =+ " \
+ 	${PN}-ap6356-bt \
+ 	${PN}-ap6398s-wifi \
+ 	${PN}-ap6398s-bt \
++	${PN}-ap6398sv-wifi \
++	${PN}-ap6398sv-bt \
+ 	${PN}-rtl8723ds-bt \
+ "
+ 
+@@ -118,6 +120,16 @@ FILES:${PN}-rtl8723ds-bt = " \
+ 	lib/firmware/rtlbt/rtl8723d_fw \
+ "
+ 
++FILES_${PN}-ap6398sv-wifi = " \
++       system/etc/firmware/fw_bcm4359c51a2_ag.bin \
++       system/etc/firmware/fw_bcm4359c51a2_ag_apsta.bin \
++       system/etc/firmware/clm_bcm4359c51a2_ag.blob \
++       system/etc/firmware/nvram_ap6398sv.txt \
++"
++FILES_${PN}-ap6398sv-bt = " \
++       system/etc/firmware/BCM4362A2.hcd \
++"
++
+ FILES:${PN} = "*"
+ 
+ # Make it depend on all of the split-out packages.
+-- 
+2.17.1
+

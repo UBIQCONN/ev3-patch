@@ -1,0 +1,25 @@
+From 1248c77dadfbad6e6a3e196420877ef7e17d166d Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 16 Sep 2021 16:15:23 +0800
+Subject: [PATCH 31/46] Fix GC8034 reset timing on power on
+
+---
+ drivers/media/i2c/gc8034.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/gc8034.c b/drivers/media/i2c/gc8034.c
+index bf52807cb7e6..720677a10688 100644
+--- a/drivers/media/i2c/gc8034.c
++++ b/drivers/media/i2c/gc8034.c
+@@ -2069,7 +2069,7 @@ static int __gc8034_power_on(struct gc8034 *gc8034)
+ 		return ret;
+ 	}
+ 	if (!IS_ERR(gc8034->reset_gpio))
+-		gpiod_set_value_cansleep(gc8034->reset_gpio, 1);
++		gpiod_set_value_cansleep(gc8034->reset_gpio, 0);
+ 
+ 	ret = regulator_bulk_enable(GC8034_NUM_SUPPLIES, gc8034->supplies);
+ 	if (ret < 0) {
+-- 
+2.17.1
+

@@ -1,0 +1,33 @@
+From 71937782973621793d50e098e854e90fd082cff7 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 28 Oct 2021 15:47:35 +0800
+Subject: [PATCH 4/7] Add for rockchip ev3 DVT board
+
+---
+ conf/machine/rockchip-px30-ev3-dvt.conf | 2 ++
+ conf/machine/rockchip-px30-ev3.conf     | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/conf/machine/rockchip-px30-ev3-dvt.conf b/conf/machine/rockchip-px30-ev3-dvt.conf
+index ffe83f7..65124d9 100644
+--- a/conf/machine/rockchip-px30-ev3-dvt.conf
++++ b/conf/machine/rockchip-px30-ev3-dvt.conf
+@@ -17,3 +17,5 @@ RK_WIFIBT_FIRMWARES = " \
+ 	rkwifibt-firmware-ap6398sv-bt \
+ 	brcm-tools \
+ "
++
++CORE_IMAGE_EXTRA_INSTALL = "ppp firmware "
+diff --git a/conf/machine/rockchip-px30-ev3.conf b/conf/machine/rockchip-px30-ev3.conf
+index 41dde88..70d039b 100644
+--- a/conf/machine/rockchip-px30-ev3.conf
++++ b/conf/machine/rockchip-px30-ev3.conf
+@@ -17,3 +17,5 @@ RK_WIFIBT_FIRMWARES = " \
+ 	rkwifibt-firmware-ap6398sv-bt \
+ 	brcm-tools \
+ "
++
++CORE_IMAGE_EXTRA_INSTALL = "ppp firmware "
+-- 
+2.17.1
+

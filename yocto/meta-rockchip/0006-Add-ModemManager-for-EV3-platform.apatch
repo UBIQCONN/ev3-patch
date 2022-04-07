@@ -1,0 +1,33 @@
+From 41cbfd88d76fb79004c373182a9ab9e1c6613884 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 17 Mar 2022 15:37:14 +0800
+Subject: [PATCH 6/7] Add ModemManager for EV3 platform
+
+---
+ conf/machine/rockchip-px30-ev3-dvt.conf | 2 +-
+ conf/machine/rockchip-px30-ev3.conf     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/conf/machine/rockchip-px30-ev3-dvt.conf b/conf/machine/rockchip-px30-ev3-dvt.conf
+index 65124d9..9c6de69 100644
+--- a/conf/machine/rockchip-px30-ev3-dvt.conf
++++ b/conf/machine/rockchip-px30-ev3-dvt.conf
+@@ -18,4 +18,4 @@ RK_WIFIBT_FIRMWARES = " \
+ 	brcm-tools \
+ "
+ 
+-CORE_IMAGE_EXTRA_INSTALL = "ppp firmware "
++CORE_IMAGE_EXTRA_INSTALL = "ppp firmware  libmbim libqmi modemmanager "
+diff --git a/conf/machine/rockchip-px30-ev3.conf b/conf/machine/rockchip-px30-ev3.conf
+index 70d039b..49f5098 100644
+--- a/conf/machine/rockchip-px30-ev3.conf
++++ b/conf/machine/rockchip-px30-ev3.conf
+@@ -18,4 +18,4 @@ RK_WIFIBT_FIRMWARES = " \
+ 	brcm-tools \
+ "
+ 
+-CORE_IMAGE_EXTRA_INSTALL = "ppp firmware "
++CORE_IMAGE_EXTRA_INSTALL = "ppp firmware  libmbim libqmi modemmanager "
+-- 
+2.17.1
+

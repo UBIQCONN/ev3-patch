@@ -1,0 +1,33 @@
+From cfe8440022b8fe333dd703dd10c2e5e612d1ec4b Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 11 Mar 2022 14:04:16 +0800
+Subject: [PATCH 40/46] Remove CONFIG_ROCKCHIP_DRM_DEBUG for ev3 configuration
+ to solve Window crash problem
+
+---
+ arch/arm64/configs/ev3_linux_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/configs/ev3_linux_defconfig b/arch/arm64/configs/ev3_linux_defconfig
+index 0c1bc6cc95d8..7da89d988f78 100644
+--- a/arch/arm64/configs/ev3_linux_defconfig
++++ b/arch/arm64/configs/ev3_linux_defconfig
+@@ -334,7 +334,6 @@ CONFIG_DRM=y
+ CONFIG_DRM_IGNORE_IOTCL_PERMIT=y
+ CONFIG_DRM_LOAD_EDID_FIRMWARE=y
+ CONFIG_DRM_ROCKCHIP=y
+-CONFIG_ROCKCHIP_DRM_DEBUG=y
+ CONFIG_ROCKCHIP_ANALOGIX_DP=y
+ CONFIG_ROCKCHIP_CDN_DP=y
+ CONFIG_ROCKCHIP_DW_HDMI=y
+@@ -582,6 +581,7 @@ CONFIG_CRYPTO_ANSI_CPRNG=y
+ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_CRYPTO_USER_API_SKCIPHER=y
+ CONFIG_CRYPTO_DEV_ROCKCHIP=y
++CONFIG_CRC_CCITT=y
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRC7=y
+ # CONFIG_XZ_DEC_X86 is not set
+-- 
+2.17.1
+

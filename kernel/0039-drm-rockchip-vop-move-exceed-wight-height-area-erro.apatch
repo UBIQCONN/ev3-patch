@@ -1,0 +1,39 @@
+From fba43eab66ef572d6b241fdf73b351b55000c692 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 11 Mar 2022 14:02:56 +0800
+Subject: [PATCH 39/46] drm/rockchip: vop: move exceed wight height area error
+ message
+
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index fc41d9dd9428..5a67445a467b 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -1827,8 +1827,8 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 
+ 	dsp_w = drm_rect_width(dest);
+ 	if (dest->x1 + dsp_w > adjusted_mode->hdisplay) {
+-		DRM_ERROR("%s win%d dest->x1[%d] + dsp_w[%d] exceed mode hdisplay[%d]\n",
+-			  crtc->name, win->win_id, dest->x1, dsp_w, adjusted_mode->hdisplay);
++//		DRM_ERROR("%s win%d dest->x1[%d] + dsp_w[%d] exceed mode hdisplay[%d]\n",
++//			  crtc->name, win->win_id, dest->x1, dsp_w, adjusted_mode->hdisplay);
+ 		dsp_w = adjusted_mode->hdisplay - dest->x1;
+ 		if (dsp_w < 4)
+ 			dsp_w = 4;
+@@ -1836,8 +1836,8 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 	}
+ 	dsp_h = drm_rect_height(dest);
+ 	if (dest->y1 + dsp_h > adjusted_mode->vdisplay) {
+-		DRM_ERROR("%s win%d dest->y1[%d] + dsp_h[%d] exceed mode vdisplay[%d]\n",
+-			  crtc->name, win->win_id, dest->y1, dsp_h, adjusted_mode->vdisplay);
++//		DRM_ERROR("%s win%d dest->y1[%d] + dsp_h[%d] exceed mode vdisplay[%d]\n",
++//			  crtc->name, win->win_id, dest->y1, dsp_h, adjusted_mode->vdisplay);
+ 		dsp_h = adjusted_mode->vdisplay - dest->y1;
+ 		if (dsp_h < 4)
+ 			dsp_h = 4;
+-- 
+2.17.1
+

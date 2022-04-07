@@ -1,0 +1,38 @@
+From 30cf20d4c5203a42c2cf64d681ba20e2de8841f4 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Wed, 15 Sep 2021 09:56:29 +0800
+Subject: [PATCH 28/46] Keep EDP bridge's regulators always on
+
+---
+ arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+index 5303e06b1657..965c73902e2b 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-ev3-ddr3-linux.dts
+@@ -194,8 +194,8 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&edp_vcc1v8_drv>;
+ 		regulator-name = "vcc1v8_edp";
+-	/*	regulator-always-on; 
+-		regulator-boot-on; */
++		regulator-always-on; 
++		regulator-boot-on; 
+ 	};
+ 
+ 	vcc1v2_edp: vcc1v2-edp-regulator {
+@@ -205,8 +205,8 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&edp_vcc1v2_drv>;
+ 		regulator-name = "vcc1v2_edp";
+-	/*	regulator-always-on;
+-		regulator-boot-on; */
++		regulator-always-on;
++		regulator-boot-on; 
+ 	};
+ 
+ 	cam_avdd2v8: cam-avdd2v8-regulator {
+-- 
+2.17.1
+

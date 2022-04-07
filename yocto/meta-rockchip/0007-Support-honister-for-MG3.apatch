@@ -1,0 +1,115 @@
+From f80180ccde32e87c27f4afd752704b6b8ae9de4d Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 25 Mar 2022 14:29:21 +0800
+Subject: [PATCH 7/7] Support honister for MG3
+
+---
+ conf/machine/rockchip-px30-ev3-dvt.conf             |  5 ++---
+ conf/machine/rockchip-px30-ev3.conf                 |  2 +-
+ recipes-bsp/firmware/firmware_1.0.bb                |  4 ++--
+ recipes-core/ppp/ppp_%.bbappend                     | 13 +++++++------
+ .../rkwifibt-firmware/rkwifibt-firmware.bb          |  4 ++--
+ 5 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/conf/machine/rockchip-px30-ev3-dvt.conf b/conf/machine/rockchip-px30-ev3-dvt.conf
+index 9c6de69..11c6635 100644
+--- a/conf/machine/rockchip-px30-ev3-dvt.conf
++++ b/conf/machine/rockchip-px30-ev3-dvt.conf
+@@ -14,8 +14,7 @@ UBOOT_MACHINE = "evb-px30_defconfig"
+ 
+ RK_WIFIBT_FIRMWARES = " \
+ 	rkwifibt-firmware-ap6398sv-wifi \
+-	rkwifibt-firmware-ap6398sv-bt \
++	rkwifibt-firmware-ap6275p-bt \
+ 	brcm-tools \
+ "
+-
+-CORE_IMAGE_EXTRA_INSTALL = "ppp firmware  libmbim libqmi modemmanager "
++CORE_IMAGE_EXTRA_INSTALL = "ppp firmware libmbim libqmi modemmanager "
+diff --git a/conf/machine/rockchip-px30-ev3.conf b/conf/machine/rockchip-px30-ev3.conf
+index 49f5098..de68022 100644
+--- a/conf/machine/rockchip-px30-ev3.conf
++++ b/conf/machine/rockchip-px30-ev3.conf
+@@ -14,7 +14,7 @@ UBOOT_MACHINE = "evb-px30_defconfig"
+ 
+ RK_WIFIBT_FIRMWARES = " \
+ 	rkwifibt-firmware-ap6398sv-wifi \
+-	rkwifibt-firmware-ap6398sv-bt \
++	rkwifibt-firmware-ap6275p-bt \
+ 	brcm-tools \
+ "
+ 
+diff --git a/recipes-bsp/firmware/firmware_1.0.bb b/recipes-bsp/firmware/firmware_1.0.bb
+index e68c3ca..39d58f0 100644
+--- a/recipes-bsp/firmware/firmware_1.0.bb
++++ b/recipes-bsp/firmware/firmware_1.0.bb
+@@ -7,7 +7,7 @@ SECTION = "firmware"
+ DEPENDS = ""
+ LICENSE = "CLOSED"
+ 
+-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
++FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}-${PV}:"
+ 
+ # URI to download code from bitbucket created from bitbucket link: 
+ # "git@bitbucket.org:lisoteam/liso_linux.git"
+@@ -29,7 +29,7 @@ do_install() {
+   install -m 0644 ${WORKDIR}/firmware_version ${D}/home/root/.firmware_version
+ }
+ 
+-FILES_${PN} += " \
++FILES:${PN} += " \
+             /home/root/* \
+             /home/root/.firmware_version \
+               "
+diff --git a/recipes-core/ppp/ppp_%.bbappend b/recipes-core/ppp/ppp_%.bbappend
+index 10763a3..64b6d93 100644
+--- a/recipes-core/ppp/ppp_%.bbappend
++++ b/recipes-core/ppp/ppp_%.bbappend
+@@ -1,17 +1,18 @@
+-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+ 
+-SRC_URI += "\
+-    file://wcdma \
+-    file://wcdma-connect-chat \
++FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
++
++SRC_URI:append = " \
++	file://wcdma \
++	file://wcdma-connect-chat \
+ "
+ 
+-do_install_append () {
++do_install:append () {
+     install -m 0755 ${WORKDIR}/wcdma ${D}${sysconfdir}/ppp/peers/wcdma
+     install -m 0755 ${WORKDIR}/wcdma-connect-chat ${D}${sysconfdir}/ppp/peers/wcdma-connect-chat
+ }
+ 
+ # Mark the files which are part of this package
+-FILES_${PN} += "${sysconfdir}/ppp/ \
++FILES:${PN} += "${sysconfdir}/ppp/ \
+                              ${sysconfdir}/ppp/peers/ \
+                              ${sysconfdir}/ppp/peers/wcdma \
+                              ${sysconfdir}/ppp/peers/wcdma-connect-chat \
+diff --git a/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb b/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb
+index 34ac82a..72f88ac 100644
+--- a/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb
++++ b/recipes-kernel/rkwifibt-firmware/rkwifibt-firmware.bb
+@@ -120,13 +120,13 @@ FILES:${PN}-rtl8723ds-bt = " \
+ 	lib/firmware/rtlbt/rtl8723d_fw \
+ "
+ 
+-FILES_${PN}-ap6398sv-wifi = " \
++FILES:${PN}-ap6398sv-wifi = " \
+        system/etc/firmware/fw_bcm4359c51a2_ag.bin \
+        system/etc/firmware/fw_bcm4359c51a2_ag_apsta.bin \
+        system/etc/firmware/clm_bcm4359c51a2_ag.blob \
+        system/etc/firmware/nvram_ap6398sv.txt \
+ "
+-FILES_${PN}-ap6398sv-bt = " \
++FILES:${PN}-ap6398sv-bt = " \
+        system/etc/firmware/BCM4362A2.hcd \
+ "
+ 
+-- 
+2.17.1
+

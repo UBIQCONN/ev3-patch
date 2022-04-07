@@ -1,0 +1,88 @@
+From 5887df831d0ee5f170cf267a9b46c6f368f12494 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 28 Oct 2021 15:49:27 +0800
+Subject: [PATCH 5/7] Add ppp for NL678
+
+---
+ recipes-core/ppp/ppp/wcdma              | 21 +++++++++++++++++++++
+ recipes-core/ppp/ppp/wcdma-connect-chat | 14 ++++++++++++++
+ recipes-core/ppp/ppp_%.bbappend         | 18 ++++++++++++++++++
+ 3 files changed, 53 insertions(+)
+ create mode 100644 recipes-core/ppp/ppp/wcdma
+ create mode 100644 recipes-core/ppp/ppp/wcdma-connect-chat
+ create mode 100644 recipes-core/ppp/ppp_%.bbappend
+
+diff --git a/recipes-core/ppp/ppp/wcdma b/recipes-core/ppp/ppp/wcdma
+new file mode 100644
+index 0000000..aa20ea7
+--- /dev/null
++++ b/recipes-core/ppp/ppp/wcdma
+@@ -0,0 +1,21 @@
++# Usage: root>pppd call wcdma
++/dev/ttyUSB2
++115200
++#noauth
++nocrtscts
++nocdtrcts
++local
++debug
++nobsdcomp
++nodeflate
++nodetach
++novj
++defaultroute
++noipdefault
++usepeerdns
++ipcp-accept-local
++ipcp-accept-remote
++mru 1280
++mtu 1500
++#lock
++connect '/usr/sbin/chat -s -v -f /etc/ppp/peers/wcdma-connect-chat'
+diff --git a/recipes-core/ppp/ppp/wcdma-connect-chat b/recipes-core/ppp/ppp/wcdma-connect-chat
+new file mode 100644
+index 0000000..afc5bff
+--- /dev/null
++++ b/recipes-core/ppp/ppp/wcdma-connect-chat
+@@ -0,0 +1,14 @@
++TIMEOUT 15
++ABORT "DELAYED"
++ABORT "BUSY"
++ABORT "ERROR"
++ABORT "NO DIALTONE"
++ABORT "NO CARRIER"
++TIMEOUT 40
++'' \rAT
++OK ATS0=0
++OK ATE0V1
++OK AT+CGDCONT=1,"IP","internet"
++OK ATDT*99***1#
++CONNECT ''
++
+diff --git a/recipes-core/ppp/ppp_%.bbappend b/recipes-core/ppp/ppp_%.bbappend
+new file mode 100644
+index 0000000..10763a3
+--- /dev/null
++++ b/recipes-core/ppp/ppp_%.bbappend
+@@ -0,0 +1,18 @@
++FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
++
++SRC_URI += "\
++    file://wcdma \
++    file://wcdma-connect-chat \
++"
++
++do_install_append () {
++    install -m 0755 ${WORKDIR}/wcdma ${D}${sysconfdir}/ppp/peers/wcdma
++    install -m 0755 ${WORKDIR}/wcdma-connect-chat ${D}${sysconfdir}/ppp/peers/wcdma-connect-chat
++}
++
++# Mark the files which are part of this package
++FILES_${PN} += "${sysconfdir}/ppp/ \
++                             ${sysconfdir}/ppp/peers/ \
++                             ${sysconfdir}/ppp/peers/wcdma \
++                             ${sysconfdir}/ppp/peers/wcdma-connect-chat \
++"
+-- 
+2.17.1
+

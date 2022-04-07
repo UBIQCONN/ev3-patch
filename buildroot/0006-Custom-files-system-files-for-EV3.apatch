@@ -1,0 +1,149 @@
+From 06aeb7ae04b151cbc0a0884126c93c8187ca4207 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 17 Jun 2021 15:05:44 +0800
+Subject: [PATCH 6/6] Custom files system files for EV3
+
+---
+ .../rockchip/px30/fs-overlay-ev3-64/.gitkeep  |  0
+ .../fs-overlay-ev3-64/etc/ppp/chap-secrets    |  9 ++++++++
+ .../etc/ppp/chat/wcdma-chat-connect           | 14 +++++++++++++
+ .../etc/ppp/chat/wcdma-connect-chat           | 14 +++++++++++++
+ .../fs-overlay-ev3-64/etc/ppp/pap-secrets     | 10 +++++++++
+ .../fs-overlay-ev3-64/etc/ppp/peers/wcdma     | 21 +++++++++++++++++++
+ .../etc/udev/rules.d/99-ppp_setup.rules       |  3 +++
+ configs/rockchip_px30_64_ev3_defconfig        |  2 +-
+ 8 files changed, 72 insertions(+), 1 deletion(-)
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/.gitkeep
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chap-secrets
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-chat-connect
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-connect-chat
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/pap-secrets
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/peers/wcdma
+ create mode 100644 board/rockchip/px30/fs-overlay-ev3-64/etc/udev/rules.d/99-ppp_setup.rules
+
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/.gitkeep b/board/rockchip/px30/fs-overlay-ev3-64/.gitkeep
+new file mode 100644
+index 0000000000..e69de29bb2
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chap-secrets b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chap-secrets
+new file mode 100644
+index 0000000000..8df2cbb5e8
+--- /dev/null
++++ b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chap-secrets
+@@ -0,0 +1,9 @@
++# Secrets for authentication using CHAP
++# client server secret IP addresses
++Myclient ISP-server secret5748 *
++The parameters have the following meanings:
++Myclient --- The CHAP user of the caller.
++ISP-server --- The name of the remote computer.
++Secret5748 --- Caller's CHAP secret
++* --- The IP address associated with the caller. Use an asterisk (*) to indicate any IP address.
++
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-chat-connect b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-chat-connect
+new file mode 100644
+index 0000000000..aeea4e2bf6
+--- /dev/null
++++ b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-chat-connect
+@@ -0,0 +1,14 @@
++TIMEOUT 15
++ABORT "DELAYED"
++ABORT "BUSY"
++ABORT "ERROR"
++ABORT "NO DIALTONE"
++ABORT "NO CARRIER"
++TIMEOUT 40
++'' \rAT
++OK ATS0=0
++OK ATE0V1
++OK AT+CGDCONT=1,"IP","3gnet"
++OK ATDT*99***1#
++CONNECT ''
++
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-connect-chat b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-connect-chat
+new file mode 100644
+index 0000000000..afc5bff512
+--- /dev/null
++++ b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/chat/wcdma-connect-chat
+@@ -0,0 +1,14 @@
++TIMEOUT 15
++ABORT "DELAYED"
++ABORT "BUSY"
++ABORT "ERROR"
++ABORT "NO DIALTONE"
++ABORT "NO CARRIER"
++TIMEOUT 40
++'' \rAT
++OK ATS0=0
++OK ATE0V1
++OK AT+CGDCONT=1,"IP","internet"
++OK ATDT*99***1#
++CONNECT ''
++
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/pap-secrets b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/pap-secrets
+new file mode 100644
+index 0000000000..37b33791a2
+--- /dev/null
++++ b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/pap-secrets
+@@ -0,0 +1,10 @@
++# Secrets for authentication using PAP
++# client server secret IP addresses
++Myclient ISP-server mypassword *
++The parameters have the following meanings:
++Myclient --- The caller's PAP username.
++ISP-server --- The name of the remote computer.
++Mypassword --- The caller's PAP password.
++* --- The IP address associated with the caller. Use an asterisk (*) to indicate any IP address.
++For example: cmnet * cmnet * (configured according to the actual network username and password)
++
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/peers/wcdma b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/peers/wcdma
+new file mode 100644
+index 0000000000..b07544f402
+--- /dev/null
++++ b/board/rockchip/px30/fs-overlay-ev3-64/etc/ppp/peers/wcdma
+@@ -0,0 +1,21 @@
++# Usage: root>pppd call wcdma
++/dev/ttyUSB2
++115200
++#noauth
++nocrtscts
++nocdtrcts
++local
++debug
++nobsdcomp
++nodeflate
++nodetach
++novj
++defaultroute
++noipdefault
++usepeerdns
++ipcp-accept-local
++ipcp-accept-remote
++mru 1280
++mtu 1500
++#lock
++connect '/usr/sbin/chat -s -v -f /etc/ppp/chat/wcdma-connect-chat'
+diff --git a/board/rockchip/px30/fs-overlay-ev3-64/etc/udev/rules.d/99-ppp_setup.rules b/board/rockchip/px30/fs-overlay-ev3-64/etc/udev/rules.d/99-ppp_setup.rules
+new file mode 100644
+index 0000000000..17320a0aaa
+--- /dev/null
++++ b/board/rockchip/px30/fs-overlay-ev3-64/etc/udev/rules.d/99-ppp_setup.rules
+@@ -0,0 +1,3 @@
++# NL678-E rule
++SUBSYSTEM=="tty", ACTION=="add", ATTRS{idVendor}=="2cb7", ATTRS{idProduct}=="0104", DEVPATH=="*/ttyUSB2", RUN+="/usr/sbin/pppd call wcdma"
++
+diff --git a/configs/rockchip_px30_64_ev3_defconfig b/configs/rockchip_px30_64_ev3_defconfig
+index 612866ffe0..2bd53eb325 100644
+--- a/configs/rockchip_px30_64_ev3_defconfig
++++ b/configs/rockchip_px30_64_ev3_defconfig
+@@ -21,7 +21,7 @@
+ BR2_CCACHE=y
+ BR2_TARGET_GENERIC_HOSTNAME="px30_64"
+ BR2_TARGET_GENERIC_ISSUE="Welcome to PX30 Buildroot"
+-BR2_ROOTFS_OVERLAY="board/rockchip/px30/fs-overlay-64/"
++BR2_ROOTFS_OVERLAY="board/rockchip/px30/fs-overlay-ev3-64/"
+ BR2_PACKAGE_RKWIFIBT_AP6398SV=y
+ BR2_PACKAGE_RKWIFIBT_BTUART="ttyS1"
+ BR2_PACKAGE_DOSFSTOOLS_FATLABEL=y
+-- 
+2.17.1
+

@@ -1,0 +1,25 @@
+From 0e58a309f2b13e57cc4e96c4e1a6bad5a96b3839 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Mon, 14 Mar 2022 14:57:41 +0800
+Subject: [PATCH 46/46] Set AP6XXXX firmware default path
+
+---
+ arch/arm64/configs/ev3_linux_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/ev3_linux_defconfig b/arch/arm64/configs/ev3_linux_defconfig
+index 8078322d4e31..98a56948c991 100644
+--- a/arch/arm64/configs/ev3_linux_defconfig
++++ b/arch/arm64/configs/ev3_linux_defconfig
+@@ -211,6 +211,8 @@ CONFIG_WL_ROCKCHIP=y
+ CONFIG_WIFI_BUILD_MODULE=y
+ CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP=y
+ CONFIG_AP6XXX=m
++CONFIG_BCMDHD_FW_PATH="/system/etc/firmware/fw_bcmdhd.bin"
++CONFIG_BCMDHD_NVRAM_PATH="/system/etc/firmware/nvram.txt"
+ CONFIG_USB_NET_RNDIS_WLAN=y
+ CONFIG_INPUT_FF_MEMLESS=y
+ CONFIG_INPUT_EVDEV=y
+-- 
+2.17.1
+

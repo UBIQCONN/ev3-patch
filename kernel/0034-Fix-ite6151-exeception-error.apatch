@@ -1,0 +1,25 @@
+From 5df886644b9389a4b48682a681bfaf041b20b85f Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 29 Oct 2021 14:15:17 +0800
+Subject: [PATCH 34/46] Fix ite6151 exeception error
+
+---
+ drivers/gpu/drm/bridge/ite6151.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/ite6151.c b/drivers/gpu/drm/bridge/ite6151.c
+index 26b265feb994..7288fdb4fcd3 100644
+--- a/drivers/gpu/drm/bridge/ite6151.c
++++ b/drivers/gpu/drm/bridge/ite6151.c
+@@ -977,7 +977,7 @@ static void it6151_bridge_post_disable(struct drm_bridge *bridge)
+ {
+ 	struct it6151 *it6151 = bridge->driver_private;
+ 
+-	drm_panel_unprepare(it6151->panel);
++//	drm_panel_unprepare(it6151->panel);
+ 
+         if (it6151->reset_gpio){
+ 		gpiod_direction_output(it6151->reset_gpio, 0);
+-- 
+2.17.1
+

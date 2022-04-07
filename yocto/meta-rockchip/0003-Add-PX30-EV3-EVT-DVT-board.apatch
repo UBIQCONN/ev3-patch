@@ -1,0 +1,65 @@
+From 3f348cc75e741ae40926b1fec412dc2efac6189c Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Fri, 18 Mar 2022 16:50:44 +0800
+Subject: [PATCH 3/7] Add PX30 EV3 EVT\DVT board
+
+---
+ conf/machine/rockchip-px30-ev3-dvt.conf | 19 +++++++++++++++++++
+ conf/machine/rockchip-px30-ev3.conf     | 19 +++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+ create mode 100644 conf/machine/rockchip-px30-ev3-dvt.conf
+ create mode 100644 conf/machine/rockchip-px30-ev3.conf
+
+diff --git a/conf/machine/rockchip-px30-ev3-dvt.conf b/conf/machine/rockchip-px30-ev3-dvt.conf
+new file mode 100644
+index 0000000..ffe83f7
+--- /dev/null
++++ b/conf/machine/rockchip-px30-ev3-dvt.conf
+@@ -0,0 +1,19 @@
++# Copyright (c) 2019, Fuzhou Rockchip Electronics Co., Ltd
++# Released under the MIT license (see COPYING.MIT for the terms)
++
++#@TYPE: Machine
++#@NAME: PX30 EVB
++
++require conf/machine/include/px30.inc
++
++KERNEL_DEVICETREE = "rockchip/px30-ev3-ddr3-dvt-linux.dtb"
++
++KBUILD_DEFCONFIG = "ev3_linux_defconfig"
++
++UBOOT_MACHINE = "evb-px30_defconfig"
++
++RK_WIFIBT_FIRMWARES = " \
++	rkwifibt-firmware-ap6398sv-wifi \
++	rkwifibt-firmware-ap6398sv-bt \
++	brcm-tools \
++"
+diff --git a/conf/machine/rockchip-px30-ev3.conf b/conf/machine/rockchip-px30-ev3.conf
+new file mode 100644
+index 0000000..41dde88
+--- /dev/null
++++ b/conf/machine/rockchip-px30-ev3.conf
+@@ -0,0 +1,19 @@
++# Copyright (c) 2019, Fuzhou Rockchip Electronics Co., Ltd
++# Released under the MIT license (see COPYING.MIT for the terms)
++
++#@TYPE: Machine
++#@NAME: PX30 EVB
++
++require conf/machine/include/px30.inc
++
++KERNEL_DEVICETREE = "rockchip/px30-ev3-ddr3-linux.dtb"
++
++KBUILD_DEFCONFIG = "ev3_linux_defconfig"
++
++UBOOT_MACHINE = "evb-px30_defconfig"
++
++RK_WIFIBT_FIRMWARES = " \
++	rkwifibt-firmware-ap6398sv-wifi \
++	rkwifibt-firmware-ap6398sv-bt \
++	brcm-tools \
++"
+-- 
+2.17.1
+

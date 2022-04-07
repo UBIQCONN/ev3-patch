@@ -1,0 +1,34 @@
+From 2f3317245d9892f0ecc6d57bf95eb2a1af926cdc Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 28 Oct 2021 12:08:01 +0800
+Subject: [PATCH] EV3:Fixed for audio path
+
+---
+ alsa/ucm/rockchip,rk809-codec/HiFi.conf | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/alsa/ucm/rockchip,rk809-codec/HiFi.conf b/alsa/ucm/rockchip,rk809-codec/HiFi.conf
+index d950e08..54e18d6 100644
+--- a/alsa/ucm/rockchip,rk809-codec/HiFi.conf
++++ b/alsa/ucm/rockchip,rk809-codec/HiFi.conf
+@@ -16,7 +16,7 @@ SectionDevice."Headphone".0 {
+ 	EnableSequence [
+ 		cdev "hw:rockchiprk809co"
+ 
+-		cset "name='Playback Path' HP"
++		cset "name='Playback Path' SPK_HP"
+ 	]
+ 
+ 	DisableSequence [
+@@ -40,7 +40,7 @@ SectionDevice."Speaker".0 {
+ 	EnableSequence [
+ 		cdev "hw:rockchiprk809co"
+ 
+-		cset "name='Playback Path' SPK"
++		cset "name='Playback Path' SPK_HP"
+ 	]
+ 
+ 	DisableSequence [
+-- 
+2.17.1
+

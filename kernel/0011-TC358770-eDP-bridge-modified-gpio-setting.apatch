@@ -1,0 +1,37 @@
+From 04b76263d3b2f0b2e472e64f67330031056ddaa9 Mon Sep 17 00:00:00 2001
+From: ShihYuan-Huang <timmy@ubiqconn.com>
+Date: Thu, 10 Jun 2021 18:45:47 +0800
+Subject: [PATCH 11/46] TC358770 eDP bridge modified gpio setting
+
+---
+ drivers/gpu/drm/bridge/tc358770.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/gpu/drm/bridge/tc358770.c b/drivers/gpu/drm/bridge/tc358770.c
+index ac297a9e1bd5..b05e56813889 100644
+--- a/drivers/gpu/drm/bridge/tc358770.c
++++ b/drivers/gpu/drm/bridge/tc358770.c
+@@ -1487,6 +1487,10 @@ static int tc_bridge_probe(struct i2c_client *client,
+ 		ret = PTR_ERR(tc->enable_gpio);
+ 	}
+ 
++        if (tc->enable_gpio){
++		gpiod_direction_output(tc->enable_gpio, 1);
++	}
++
+ 	tc->refclk = devm_clk_get(tc->dev, "refclk");
+ 	if (IS_ERR(tc->refclk)) {
+ 		ret = PTR_ERR(tc->refclk);
+@@ -1502,6 +1506,9 @@ static int tc_bridge_probe(struct i2c_client *client,
+                 return ret;
+         }
+ 
++
++        dev_info(tc->dev, "Device ID: 0x%08x\n", tc->rev);
++
+         if ((tc->rev != 0x7001) && (tc->rev != 0x7003)) {
+                 dev_err(tc->dev, "invalid device ID: 0x%08x\n", tc->rev);
+                 return -EINVAL;
+-- 
+2.17.1
+

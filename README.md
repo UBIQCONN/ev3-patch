@@ -26,13 +26,19 @@ Please reference “Rockchip PX30 Linux SDK Release Note”’s chapter 7: SDK b
 	Below is build package sample: 
 
 Platform Configuation:
-	$  ./build.sh device/rockchip/px30/BoardConfig-px30-ev3-ddr3-dvt.mk
+```sh
+$  ./build.sh device/rockchip/px30/BoardConfig-px30-ev3-ddr3-dvt.mk
+```
 	
 Build Buildroot, kernel and bootloader :
-	$  ./build.sh all	
+```sh
+$  ./build.sh all	
+```
 
 Build Yocto and yocto image ’s kernel :
-     $  ./build.sh yocto
+```sh
+ $  ./build.sh yocto
+```
 	 
 BoardConfig-px30-ev3-ddr3-dvt.mk is for DVT board
 BoardConfig-px30-ev3-ddr3.mk is for EVT board
